@@ -3,7 +3,7 @@
 MASTER_SECRET = 'very secret string'
 
 # The host for the webserver
-HOST = 'localhost'
+HOST = '127.0.0.1'
 
 # The port for the webserver
-PORT = 8080
+PORT = 5000

@@ -51,11 +51,9 @@ There are two functions, encrypt and decrypt. Simply POST data to /encrypt and
 save the response. To decrypt, POST the response to /decrypt.
 
 ### Run the server
-Using python3:
+It appears to work with both python3 and python2.
 
     python main.py
-
-Python 2 has not been tested.
 
 ### Encrypt
 POST /encrypt with raw data with content type multipart/form-data

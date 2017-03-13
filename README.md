@@ -1,6 +1,8 @@
 # cryptsak
 Simple http api service for encrypting and decrypting stuff. Should probably not be trusted in practice.
 
+As long as the master secret is constant the system is stateless as far as a client can be concerned.
+
 ## Dependencies: flask and pycrypt 
     
     $ pip install flask pycrypt

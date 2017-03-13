@@ -58,6 +58,9 @@ class Crypter:
 		# create the text representation and return it
 		return self.__to_text(ciphertext, salt, iv)
 
+	# Decrypt the data.
+	# Parse the text and extract ciphertext, salt and iv, then decrypt and
+	# return the plaintext.
 	def decrypt(self, text):
 		# parse the text and decode the base64
 		fields = text.decode('latin1').split(';');

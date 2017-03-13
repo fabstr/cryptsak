@@ -37,6 +37,8 @@ Which (using the same master secret as above) will return
 
     this is a string to be encrypted
 
+You can try this out by using the master secret 'very secret string'.
+
 ## Future work
 Set up a HTTPS server with a self signed certificate and certificate pinning, then write a client api library which validates the certificate.
 

@@ -19,6 +19,17 @@ class Crypter:
 	def __get_iv(self):
 		return urandom(16)
 
+	# Get an instance of the AES cipher.
+	# Compute the encryption key from the salt before createing the 
+	# instance.
+	def __get_cipher(self, salt, iv):
+		# compute the encryption key
+		encryption_key = self.__get_encryption_key(salt)
+
+		# create the aes cipher object and return it
+		cipher = AES.new(encryption_key, AES.MODE_CFB, iv)
+		return cipher
+
 	# Use PBKDF2 to derive an encryption key from the master secret and salt.
 	# 10000 iterations are used and the hash function is Sha256.
 	def __get_encryption_key(self, salt):
@@ -46,33 +57,35 @@ class Crypter:
 	def encrypt(self, data):
 		# get the salt and iv
 		salt = self.__get_salt()
-		iv = self.__get_iv()
+		iv   = self.__get_iv()
 
-		# compute the encryption key
-		encryption_key = self.__get_encryption_key(salt)
-
-		# create the aes cipher object and perform the encryption
-		cipher = AES.new(encryption_key, AES.MODE_CFB, iv)
+		# get the cipher object and perform the encryption
+		cipher     = self.__get_cipher(salt, iv)
 		ciphertext = cipher.encrypt(data)
 
 		# create the text representation and return it
 		return self.__to_text(ciphertext, salt, iv)
 
+	# Parse the text and decode the base64.
+	# Text is a string of 3 base64 encoded strings, delimited by a 
+	# semicolon in the order ciphertext, salt, iv.
+	def __parse_text(self, text):
+		fields = text.decode('latin1').split(';');
+
+		ciphertext = b64decode(fields[0])
+		salt       = b64decode(fields[1])
+		iv         = b64decode(fields[2])
+
+		return (ciphertext, salt, iv)
+
 	# Decrypt the data.
 	# Parse the text and extract ciphertext, salt and iv, then decrypt and
 	# return the plaintext.
 	def decrypt(self, text):
-		# parse the text and decode the base64
-		fields = text.decode('latin1').split(';');
-		ciphertext = b64decode(fields[0])
-		salt = b64decode(fields[1])
-		iv = b64decode(fields[2])
+		(ciphertext, salt, iv) = self.__parse_text(text)
 
-		# compute the encryption key
-		encryption_key = self.__get_encryption_key(salt)
-
-		# create the aes cipher object and perform the decryption
-		cipher = AES.new(encryption_key, AES.MODE_CFB, iv)
+		# get the cipher object and perform the decryption
+		cipher    = self.__get_cipher(salt, iv)
 		plaintext = cipher.decrypt(ciphertext)
 
 		# return the plaintext

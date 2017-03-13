@@ -18,12 +18,15 @@ class Crypter:
 		encryption_key = pbkdf2_hmac('sha256', bytearray(self.__master_secret, 'latin1'), salt, 10000)
 		return encryption_key
 
-	def __to_json(self, cryptdata):
-		base64_encoded_cryptdata = {}
-		for key, value in cryptdata.items():
-			base64_encoded_cryptdata[key] = b64encode(value).decode('latin1')
+	def __to_text(self, cryptdata):
+		text = ""
+		text += b64encode(cryptdata.get('ciphertext')).decode('latin1')
+		text += ";"
+		text += b64encode(cryptdata.get('salt')).decode('latin1')
+		text += ";"
+		text += b64encode(cryptdata.get('iv')).decode('latin1')
 
-		return dumps(base64_encoded_cryptdata)
+		return text
 
 	def encrypt(self, data):
 		salt = self.__get_salt()
@@ -39,16 +42,17 @@ class Crypter:
 			'ciphertext':ciphertext
 		}
 
-		return self.__to_json(cryptdata) 
+		return self.__to_text(cryptdata) 
 
-	def decrypt(self, base64_encoded_cryptdata):
-		cryptdata = {}
-		for key, value in base64_encoded_cryptdata.items():
-			cryptdata[key] = b64decode(value)
+	def decrypt(self, text):
+		fields = text.decode('latin1').split(';');
 
-		encryption_key = self.__get_encryption_key(cryptdata.get('salt'))
-		iv = cryptdata.get('iv')
+		ciphertext = b64decode(fields[0])
+		salt = b64decode(fields[1])
+		iv = b64decode(fields[2])
+
+		encryption_key = self.__get_encryption_key(salt)
 
 		cipher = AES.new(encryption_key, AES.MODE_CFB, iv)
-		plaintext = cipher.decrypt(cryptdata.get('ciphertext'))
+		plaintext = cipher.decrypt(ciphertext)
 		return plaintext

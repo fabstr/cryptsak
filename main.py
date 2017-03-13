@@ -10,17 +10,15 @@ def hello():
 
 @app.route('/encrypt', methods=['POST'])
 def encrypt():
-	data = request.json.get('plaintext')
+	request.get_data()
+	data = request.data
 	crypter = Crypter(Config.MASTER_SECRET)
 	return crypter.encrypt(data)
 
 @app.route('/decrypt', methods=['POST'])
 def decrypt():
+	request.get_data()
 	crypter = Crypter(Config.MASTER_SECRET)
-	return crypter.decrypt({
-		'ciphertext': request.json.get('ciphertext'),
-		'salt': request.json.get('salt'),
-		'iv': request.json.get('iv'),
-	})
+	return crypter.decrypt(request.data)
 
 app.run(host=Config.HOST, port=Config.PORT)

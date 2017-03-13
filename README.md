@@ -12,6 +12,13 @@ Please change the master secret in Config.py. Update host and port as necessary.
 There are two functions, encrypt and decrypt. Simply POST data to /encrypt and
 save the response. To decrypt, POST the response to /decrypt.
 
+### Run the server
+Using python3:
+
+    python main.py
+
+Python 2 has not been tested.
+
 ### Encrypt
 POST /encrypt with raw data with content type multipart/form-data
     

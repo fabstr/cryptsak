@@ -1,5 +1,5 @@
 # cryptsak
-Simple json api service for encrypting and decrypting stuff. Should probably not be trusted in practice.
+Simple http api service for encrypting and decrypting stuff. Should probably not be trusted in practice.
 
 ## Dependencies: flask and pycrypt 
     
